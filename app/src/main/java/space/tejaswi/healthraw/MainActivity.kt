@@ -13,12 +13,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -133,8 +131,8 @@ class MainActivity: ComponentActivity() {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(entry.source.ifBlank { "Unknown source" }, style = MaterialTheme.typography.titleSmall)
                             Text("ID: ${entry.id}", style = MaterialTheme.typography.bodySmall)
-                            TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) "Hide raw JSON" else "Inspect raw JSON") }
-                            if (expanded) SelectionContainer { Text(entry.json, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall) }
+                            TextButton(onClick = { expanded = true }) { Text("Inspect record") }
+                            if (expanded) JsonViewer(entry, onDismiss = { expanded = false })
                         }
                     }
                 }
@@ -155,6 +153,7 @@ class PrivacyActivity: ComponentActivity() {
                 Text("Health Raw requests read access only for the record types you choose. It never writes or deletes Health Connect records.")
                 Text("Records are held in memory while browsing. There is no server, analytics, advertising, or network permission. Android backup is disabled and the explorer blocks screenshots.")
                 Text("JSON exports are saved only when you choose a destination. That destination may be a cloud document provider. Exported files contain sensitive health data; manage and delete them yourself.")
+                Text("Copy JSON places the selected record on your system clipboard. On Android 13 and later it is marked sensitive to hide the clipboard preview. Other clipboard access rules are controlled by Android.")
                 Text("Optional history permission lets you read older records on supported devices. You can revoke access at any time through Health Connect settings.")
                 Text("This app displays original SDK data, including source metadata and sample arrays. It does not interpret health results or produce medical advice.")
                 Button(onClick = { finish() }) { Text("Done") }

@@ -7,7 +7,7 @@ Native Kotlin / Jetpack Compose Android app to inspect raw Health Connect health
 1. Install the APK and open Health Raw.
 2. Choose a record type and grant its read permission.
 3. Set inclusive local dates in YYYY-MM-DD format, then tap Read records.
-4. Inspect any record's JSON. Filter loaded entries by source package.
+4. Tap Inspect record for a full-screen expandable tree. Search keys, JSON pointer paths or values; matching branches open automatically. Switch to JSON for syntax coloring, line numbers and selectable original text. Copy JSON copies the complete record to the system clipboard (marked sensitive on Android 13+). Filter loaded entries by source package.
 5. Load additional pages (100 records each). Export saves **all loaded records** from the selected query, regardless of the source filter. The export explicitly marks whether more pages remain.
 
 38 supported types cover activity, sleep, heart rate and its samples, body measurements, nutrition, hydration, vital signs and reproductive health. Read-only: no writes, deletes, background reads, networking, telemetry, database, or automatic exports. Data remains in memory until the process ends or the query changes; permission revocation clears the current query on resume. Explorer screenshots and Android backups are disabled.
