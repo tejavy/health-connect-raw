@@ -2,6 +2,8 @@
 
 Native Kotlin / Jetpack Compose Android app to inspect raw Health Connect health and fitness records. Android 9+; Android 14+ provides Health Connect in the system, while Android 9–13 requires the Health Connect provider app.
 
+The app follows Android's light/dark appearance, including the explorer, JSON viewer, privacy screen, and system bars. JSON syntax colors adapt to keep values readable in both themes.
+
 ## Use
 
 1. Install the APK and open Health Raw.

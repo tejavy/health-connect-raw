@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -29,6 +28,7 @@ import kotlinx.coroutines.withContext
 
 @Composable fun JsonViewer(entry: Entry, onDismiss: () -> Unit) {
     val context = LocalContext.current
+    val colors = jsonColors()
     var raw by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(setOf("", "/data")) }
@@ -70,7 +70,7 @@ import kotlinx.coroutines.withContext
                                 Row(Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                                     Text("${index + 1}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = FontFamily.Monospace,
                                         style = MaterialTheme.typography.bodySmall, modifier = Modifier.width(44.dp))
-                                    Text(remember(lines[index]) { highlightJson(lines[index]) }, fontFamily = FontFamily.Monospace,
+                                    Text(remember(lines[index], colors) { highlightJson(lines[index], colors) }, fontFamily = FontFamily.Monospace,
                                         style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
                                 }
                             }
@@ -84,9 +84,9 @@ import kotlinx.coroutines.withContext
                         items(visible, key = { it.path }) { node ->
                             val color = when(node.value) {
                                 null, org.json.JSONObject.NULL -> MaterialTheme.colorScheme.onSurfaceVariant
-                                is Number -> Color(0xFF7E4800)
-                                is Boolean -> Color(0xFF7743A5)
-                                is String -> MaterialTheme.colorScheme.primary
+                                is Number -> colors.number
+                                is Boolean -> colors.boolean
+                                is String -> colors.string
                                 else -> MaterialTheme.colorScheme.onSurface
                             }
                             Column(Modifier.fillMaxWidth().then(if (node.container && query.isBlank()) Modifier.clickable {
@@ -111,16 +111,16 @@ import kotlinx.coroutines.withContext
 }
 
 private val jsonToken = Regex("\"(?:\\\\.|[^\"\\\\])*\"|\\b(?:true|false|null)\\b|-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?")
-private fun highlightJson(line: String): AnnotatedString = buildAnnotatedString {
+private fun highlightJson(line: String, colors: JsonColors): AnnotatedString = buildAnnotatedString {
     append(line)
     jsonToken.findAll(line).forEach { match ->
         val token = match.value
         val color = when {
-            token.startsWith('"') && line.substring(match.range.last + 1).trimStart().startsWith(':') -> Color(0xFF254E79)
-            token.startsWith('"') -> Color(0xFF006C67)
-            token == "null" -> Color(0xFF697078)
-            token == "true" || token == "false" -> Color(0xFF7743A5)
-            else -> Color(0xFF7E4800)
+            token.startsWith('"') && line.substring(match.range.last + 1).trimStart().startsWith(':') -> colors.key
+            token.startsWith('"') -> colors.string
+            token == "null" -> colors.nil
+            token == "true" || token == "false" -> colors.boolean
+            else -> colors.number
         }
         addStyle(SpanStyle(color = color), match.range.first, match.range.last + 1)
     }
