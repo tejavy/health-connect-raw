@@ -26,7 +26,17 @@ JDK 17 and Android SDK 36:
 .\gradlew.bat :app:assembleDebug :app:lintDebug :app:testDebugUnitTest --no-daemon --max-workers=2
 ```
 
-Set your SDK path in local.properties or ANDROID_HOME. Debug APK: app/build/outputs/apk/debug/app-debug.apk. The delivered APK is debug-signed for personal installation; there is no production signing configuration or Play Store publication. Play distribution requires the relevant Health Connect declarations and policy review.
+Set your SDK path in local.properties or ANDROID_HOME. Debug APK: app/build/outputs/apk/debug/app-debug.apk. Tagged GitHub releases provide a signed release APK. Play distribution requires the relevant Health Connect declarations and policy review.
+
+## Signed releases
+
+Supply `HEALTH_RAW_KEYSTORE_PATH`, `HEALTH_RAW_STORE_PASSWORD`, `HEALTH_RAW_KEY_ALIAS`, and `HEALTH_RAW_KEY_PASSWORD` through environment variables. Release tasks fail if signing credentials are absent. Keep the persistent app-specific key and credentials outside Git and back them up securely; every update must use the same signing identity.
+
+```powershell
+.\gradlew.bat test lintRelease assembleRelease --no-daemon --max-workers=2
+```
+
+Release APK metadata: app/build/outputs/apk/release/output-metadata.json. Minification is disabled to preserve public SDK property names used by raw JSON export. Release APKs cannot update the earlier debug-signed APK: uninstall that debug build before installing the first signed release. Subsequent signed releases can update normally.
 
 ## Device verification
 
